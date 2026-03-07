@@ -1,27 +1,35 @@
-import os  # the os module is used for file and directory operations
+import os
 from LZW import LZWCoding
 
-# read and decompress the file sample.bin
-filename = 'sample'
-lzw = LZWCoding(filename, 'text')
-output_path = lzw.decompress_text_file()
+# This script decompresses sample_compressed.bin and produces sample_decompressed.txt
+# Before running this, you must first run text_file_compression_example.py
 
-# compare the decompressed file with the original file
-# ------------------------------------------------------------------------------
-# get the current directory where this program is placed
-current_directory = os.path.dirname(os.path.realpath(__file__))
-# build the path of the original file
-original_file = filename + '.txt'
-original_path = current_directory + '/' + original_file
-# build the path of the decompressed file
-decompressed_file = filename + '_decompressed.txt'
-decompressed_path = current_directory + '/' + decompressed_file
-# read the contents of both files
-with open(original_path, 'r') as file1, open(decompressed_path, 'r') as file2:
-   original_text = file1.read()
-   decompressed_text = file2.read()
-# compare the file contents and print the result
-if original_text == decompressed_text:
-   print(original_file + ' and ' + decompressed_file + ' are the same.')
+# Get the directory where this script is located
+current_dir = os.path.dirname(os.path.realpath(__file__))
+
+# Build the full path to the compressed file
+compressed_path = os.path.join(current_dir, 'sample_compressed.bin')
+
+# Check if the compressed file exists
+if not os.path.exists(compressed_path):
+    print(f"ERROR: 'sample_compressed.bin' not found!")
+    print("Please run text_file_compression_example.py first.")
 else:
-   print(original_file + ' and ' + decompressed_file + ' are NOT the same.')
+    # Pass the full path without extension
+    filename = os.path.join(current_dir, 'sample')
+    lzw = LZWCoding(filename, 'text')
+    output_path = lzw.decompress_text_file()
+    print(f"\nDecompression complete: {output_path}")
+
+    # Compare the decompressed file with the original
+    original_path = os.path.join(current_dir, 'sample.txt')
+    decompressed_path = os.path.join(current_dir, 'sample_decompressed.txt')
+
+    with open(original_path, 'r') as f1, open(decompressed_path, 'r') as f2:
+        original_text = f1.read()
+        decompressed_text = f2.read()
+
+    if original_text == decompressed_text:
+        print("sample.txt and sample_decompressed.txt are identical.")
+    else:
+        print("MISMATCH: The files are not the same!")
